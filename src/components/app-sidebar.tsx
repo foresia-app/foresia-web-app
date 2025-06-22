@@ -15,10 +15,10 @@ import {
   Users,
   FileText,
   Bell,
+  CalendarDays,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
 import {
@@ -30,6 +30,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import type { Role } from "@/lib/types"
 
 const data = {
   user: {
@@ -55,6 +57,25 @@ const data = {
         {
           title: "Meldingen",
           url: "/dashboard/notifications",
+        },
+      ],
+    },
+    {
+      title: "Agenda",
+      url: "/dashboard/agenda",
+      icon: CalendarDays,
+      items: [
+        {
+          title: "Vandaag",
+          url: "/dashboard/agenda",
+        },
+        {
+          title: "Deze Week",
+          url: "/dashboard/agenda/week",
+        },
+        {
+          title: "Deze Maand",
+          url: "/dashboard/agenda/month",
         },
       ],
     },
@@ -116,8 +137,8 @@ const data = {
       ],
     },
     {
-      title: "Rapporten",
-      url: "/reports",
+      title: "Cijfers",
+      url: "/marks",
       icon: FileText,
       items: [
         {
@@ -185,10 +206,25 @@ const data = {
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  role: Role
+  setRole: (role: Role) => void
+}
+
+export function AppSidebar({ role, setRole, ...props }: AppSidebarProps) {
+  const navMain = data.navMain.filter(item => {
+    if (role === 'student') {
+      return ['Dashboard', 'Agenda', 'Cijfers'].includes(item.title);
+    }
+    if (role === 'teacher') {
+      return ['Dashboard', 'Agenda', 'Leerlingen', 'Docenten', 'Cijfers'].includes(item.title);
+    }
+    return true; // admin sees all
+  });
+
   return (
     <Sidebar
-      className="top-(--header-height) h-[calc(100svh-var(--header-height))]!"
+      className="top-[var(--header-height)] h-[calc(100svh-var(--header-height))] flex flex-col"
       {...props}
     >
       <SidebarHeader>
@@ -198,27 +234,41 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <Link href="/dashboard">
                 <Image
                   src="/logo.png"
-                  alt="Foresia Logo"
-                  width={32}
-                  height={32}
+                  width={24}
+                  height={24}
+                  alt="Foresia"
                   className="rounded-lg"
                 />
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium text-emerald-600">Foresia</span>
-                  <span className="truncate text-xs">Schoolbeheer</span>
-                </div>
+                <span className="text-xl">Foresia</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+      <SidebarContent className="flex-1">
+        <NavMain items={navMain} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
+      <SidebarFooter className="p-4">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1">
+            <h3 className="text-sm font-semibold text-sidebar-foreground">Wissel Rol</h3>
+            <p className="text-xs text-sidebar-foreground/70">Selecteer een rol om de UI te testen.</p>
+          </div>
+          <Select value={role} onValueChange={(value) => setRole(value as Role)}>
+            <SelectTrigger className="bg-sidebar-accent hover:bg-sidebar-accent/90 border-sidebar-border text-sidebar-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background">
+              <SelectValue placeholder="Selecteer een rol" />
+            </SelectTrigger>
+            <SelectContent className="bg-card border-sidebar-border text-card-foreground">
+              <SelectItem value="student">Leerling</SelectItem>
+              <SelectItem value="teacher">Docent</SelectItem>
+              <SelectItem value="admin">Admin</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="pt-4">
+          <NavUser user={data.user} />
+        </div>
       </SidebarFooter>
     </Sidebar>
   )
