@@ -176,7 +176,6 @@ export default function AgendaPage() {
       </div>
 
       <div className="flex-1 flex gap-6 min-h-0">
-        {/* Main Agenda View */}
         <div className="flex-1 flex flex-col min-w-0">
           <Card className="flex-1 flex flex-col">
             <CardHeader>
@@ -223,14 +222,12 @@ export default function AgendaPage() {
                         <p className="text-xs text-muted-foreground">{day.date}</p>
                       </div>
                       <div className="flex-1 relative overflow-y-auto px-1">
-                        {/* Background Grid Lines */}
                         <div className="absolute top-0 left-0 w-full">
                           {Array.from({ length: 12 }).map((_, i) => (
                             <div key={i} className="h-[60px] border-b border-dashed" />
                           ))}
                         </div>
 
-                        {/* Events */}
                         <div className="relative h-full">
                           {weekAgenda[day.key as keyof typeof weekAgenda]?.map((item) => {
                             const timeToMinutes = (time: string) => {

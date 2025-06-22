@@ -45,7 +45,7 @@
 
 :root {
   --radius: 0.75rem;
-  --background: oklch(0.98 0.01 240); /* Lighter gray for light mode */
+  --background: oklch(0.98 0.01 240); 
   --foreground: oklch(0.1 0.05 240);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.1 0.05 240);
@@ -79,7 +79,7 @@
 }
 
 .dark {
-  --background: oklch(0.1 0.005 240); /* Dark gray for dark mode */
+  --background: oklch(0.1 0.005 240); 
   --foreground: oklch(0.98 0.01 240);
   --card: oklch(0.12 0.005 240);
   --card-foreground: oklch(0.98 0.01 240);
@@ -120,7 +120,6 @@
     @apply bg-background text-foreground;
   }
   
-  /* Remove any unwanted borders/lines in sidebar */
   [data-sidebar="group"],
   [data-sidebar="group-content"],
   [data-sidebar="menu"],
@@ -130,7 +129,6 @@
     box-shadow: none !important;
   }
   
-  /* Ensure no separator lines */
   [data-sidebar="content"]::before,
   [data-sidebar="content"]::after,
   [data-sidebar="group"]::before,
